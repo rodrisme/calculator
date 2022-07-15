@@ -1,4 +1,4 @@
-#calc {
+.calc {
   display: flex;
   flex-direction: column;
   min-height: 95vh;
@@ -9,8 +9,10 @@
   overflow: hidden;
   background-color: azure;
 }
-
-#container {
+.display {
+  font-size: 70px;
+}
+.container {
   width: 400px;
   height: 400px;
   background-color: aqua;
@@ -27,20 +29,6 @@
     ". . . equal";
 }
 
-#equal {
+.equal {
   grid-area: equal;
 }
-
-/* #container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-  grid-column-gap: 5px;
-  grid-row-gap: 5px;
-  justify-items: stretch;
-  align-items: stretch;
-}
-
-#equal {
-  grid-area: 5;
-} */
