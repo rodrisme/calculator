@@ -16,7 +16,6 @@ const buttonsClicks = () => {
         handleNumbers(buttons[i].textContent);
         updateDisplay();
       } else if (button.classList.contains("operator")) {
-        // operator = buttons[i].textContent;
         handleOperators(buttons[i].textContent);
         updateDisplay();
       } else if (button.classList.contains("equal")) {
@@ -25,17 +24,22 @@ const buttonsClicks = () => {
       } else if (button.classList.contains("clear")) {
         clearData();
         updateDisplay();
-      }
+      }else if (button.classList.contains("dot"))
     });
   }
 };
-buttonsClicks();
 
+buttonsClicks();
 const handleNumbers = (number) => {
-  if (secondNum === "" && firstOperator === "") {
+  if (secondNum === "" && firstOperator === "" && secondOperator === "") {
     firstNum += number;
     displayValue = firstNum;
-  } else if (firstOperator != "" && firstNum != "") {
+  }
+  if (secondOperator != "" && firstNum != "") {
+    secondNum += number;
+    displayValue = firstNum + secondOperator + secondNum;
+  }
+  if (firstOperator != "" && firstNum != "") {
     secondNum += number;
     displayValue = firstNum + firstOperator + secondNum;
   }
@@ -52,17 +56,36 @@ const handleOperators = (operator) => {
     displayValue = result + secondOperator;
     firstNum = result;
     secondNum = "";
+  } else if (firstNum != "" && secondOperator != "" && secondNum != "") {
+    result = operate(firstNum, secondNum, secondOperator);
+    secondOperator = "";
+    firstOperator = operator;
+    displayValue = result + firstOperator;
+    firstNum = result;
+    secondNum = "";
+  } else if (result != "") {
+    firstNum = result;
+    firstOperator = operator;
+    displayValue = firstNum + operator;
   }
 };
 
 const handleEqual = () => {
   if (firstOperator != "" && firstNum != "" && secondNum != "") {
     result = operate(firstNum, secondNum, firstOperator);
+    firstOperator = "";
     displayValue = result;
-    firstNum = result;
+    firstNum = "";
+    secondNum = "";
+  } else if (secondOperator != "" && firstNum != "" && secondNum != "") {
+    result = operate(firstNum, secondNum, secondOperator);
+    secondOperator = "";
+    displayValue = result;
+    firstNum = "";
     secondNum = "";
   }
 };
+
 const updateDisplay = () => {
   display.textContent = displayValue;
 };
@@ -71,7 +94,8 @@ display.textContent = displayValue;
 const clearData = () => {
   firstNum = "";
   secondNum = "";
-  operator = "";
+  firstOperator = "";
+  secondOperator = "";
   result = "";
   displayValue = "0";
   display.textContent = displayValue;
