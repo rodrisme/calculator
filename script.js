@@ -2,7 +2,6 @@ let firstOperand = "";
 let secondOperand = "";
 let operator = "";
 let result = "";
-let displayValue = "";
 
 const buttons = document.querySelectorAll("button");
 const display = document.querySelector(".display");
@@ -41,17 +40,13 @@ const clickNumbers = (number) => {
     firstOperand += number;
   } else if (firstOperand != "" && operator != "") {
     secondOperand += number;
-  } else if (firstOperand != "" && secondOperand != "" && operator != "") {
-    result = operate(firstOperand, secondOperand, operator);
-    firstOperand = result;
-    secondOperand = "";
   }
 };
 
 const clickOperator = (operators) => {
   if (firstOperand != "" && operator != "" && secondOperand != "") {
     result = operate(firstOperand, secondOperand, operator);
-    firstOperand = result;
+    firstOperand = roundNumber(result);
     operator = operators;
     secondOperand = "";
   }
@@ -61,19 +56,23 @@ const clickOperator = (operators) => {
 };
 
 const clickEqual = () => {
-  if (firstOperand != "" && operator != "" && secondOperand != "")
+  if (firstOperand != "" && operator != "" && secondOperand != "") {
     result = operate(firstOperand, secondOperand, operator);
+    firstOperand = roundNumber(result);
+    operator = "";
+    secondOperand = "";
+  }
 };
 
 const updateDisplay = () => {
   if (firstOperand != "") {
     display.textContent = firstOperand;
   }
-  if (operator != "" && secondOperand != "") {
+  if (secondOperand != "") {
     display.textContent = secondOperand;
   }
-  if (result != 0 || result === 0) {
-    display.textContent = result;
+  if ((result != "" || result === 0) && secondOperand === "") {
+    display.textContent = roundNumber(result);
   }
 };
 
@@ -94,7 +93,7 @@ const updateSecondDisplay = () => {
   if (firstOperand != "" && operator != "" && secondOperand === "") {
     secondDisplay.textContent = firstOperand + operator;
   } else if (firstOperand != "" && operator != "" && secondOperand != "") {
-    secondDisplay.textContent = firstOperand + operator + secondOperand;
+    secondDisplay.textContent = firstOperand + operator + secondOperand + "=";
   }
 };
 
@@ -129,4 +128,8 @@ const operate = (firstOperand, secondOperand, operator) => {
         return "ERROR";
       } else return divide(firstOperand, secondOperand);
   }
+};
+
+const roundNumber = (result) => {
+  return Math.round((result + Number.EPSILON) * 1000) / 1000;
 };
