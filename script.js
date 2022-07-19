@@ -1,134 +1,132 @@
-let firstNum = "";
-let secondNum = "";
-let firstOperator = "";
-let secondOperator = "";
+let firstOperand = "";
+let secondOperand = "";
+let operator = "";
 let result = "";
-let displayValue = "0";
+let displayValue = "";
 
 const buttons = document.querySelectorAll("button");
 const display = document.querySelector(".display");
+const secondDisplay = document.querySelector(".second-display");
 
-const buttonsClicks = () => {
-  for (let i = 0; i < buttons.length; i++) {
-    const button = buttons[i];
+const clickButtons = () => {
+  buttons.forEach((button) => {
     button.addEventListener("click", () => {
       if (button.classList.contains("number")) {
-        handleNumbers(buttons[i].textContent);
+        clickNumbers(button.innerText);
         updateDisplay();
+        updateSecondDisplay();
       } else if (button.classList.contains("operator")) {
-        handleOperators(buttons[i].textContent);
+        clickOperator(button.innerText);
         updateDisplay();
+        updateSecondDisplay();
       } else if (button.classList.contains("equal")) {
-        handleEqual();
+        clickEqual();
         updateDisplay();
+        updateSecondDisplay();
+      } else if (button.classList.contains("dot")) {
+        clickDot(button.innerText);
+        updateDisplay();
+        updateSecondDisplay();
       } else if (button.classList.contains("clear")) {
         clearData();
-        updateDisplay();
-      }else if (button.classList.contains("dot"))
+      }
     });
+  });
+};
+
+clickButtons();
+
+const clickNumbers = (number) => {
+  if (firstOperand === "" || operator === "") {
+    firstOperand += number;
+  } else if (firstOperand != "" && operator != "") {
+    secondOperand += number;
+  } else if (firstOperand != "" && secondOperand != "" && operator != "") {
+    result = operate(firstOperand, secondOperand, operator);
+    firstOperand = result;
+    secondOperand = "";
   }
 };
 
-buttonsClicks();
-const handleNumbers = (number) => {
-  if (secondNum === "" && firstOperator === "" && secondOperator === "") {
-    firstNum += number;
-    displayValue = firstNum;
+const clickOperator = (operators) => {
+  if (firstOperand != "" && operator != "" && secondOperand != "") {
+    result = operate(firstOperand, secondOperand, operator);
+    firstOperand = result;
+    operator = operators;
+    secondOperand = "";
   }
-  if (secondOperator != "" && firstNum != "") {
-    secondNum += number;
-    displayValue = firstNum + secondOperator + secondNum;
-  }
-  if (firstOperator != "" && firstNum != "") {
-    secondNum += number;
-    displayValue = firstNum + firstOperator + secondNum;
+  if (firstOperand != "" && operator === "") {
+    operator = operators;
   }
 };
 
-const handleOperators = (operator) => {
-  if (firstNum != "" && secondNum === "") {
-    firstOperator = operator;
-    displayValue = firstNum + firstOperator;
-  } else if (firstNum != "" && firstOperator != "" && secondNum != "") {
-    result = operate(firstNum, secondNum, firstOperator);
-    firstOperator = "";
-    secondOperator = operator;
-    displayValue = result + secondOperator;
-    firstNum = result;
-    secondNum = "";
-  } else if (firstNum != "" && secondOperator != "" && secondNum != "") {
-    result = operate(firstNum, secondNum, secondOperator);
-    secondOperator = "";
-    firstOperator = operator;
-    displayValue = result + firstOperator;
-    firstNum = result;
-    secondNum = "";
-  } else if (result != "") {
-    firstNum = result;
-    firstOperator = operator;
-    displayValue = firstNum + operator;
-  }
-};
-
-const handleEqual = () => {
-  if (firstOperator != "" && firstNum != "" && secondNum != "") {
-    result = operate(firstNum, secondNum, firstOperator);
-    firstOperator = "";
-    displayValue = result;
-    firstNum = "";
-    secondNum = "";
-  } else if (secondOperator != "" && firstNum != "" && secondNum != "") {
-    result = operate(firstNum, secondNum, secondOperator);
-    secondOperator = "";
-    displayValue = result;
-    firstNum = "";
-    secondNum = "";
-  }
+const clickEqual = () => {
+  if (firstOperand != "" && operator != "" && secondOperand != "")
+    result = operate(firstOperand, secondOperand, operator);
 };
 
 const updateDisplay = () => {
-  display.textContent = displayValue;
+  if (firstOperand != "") {
+    display.textContent = firstOperand;
+  }
+  if (operator != "" && secondOperand != "") {
+    display.textContent = secondOperand;
+  }
+  if (result != 0 || result === 0) {
+    display.textContent = result;
+  }
 };
-display.textContent = displayValue;
+
+const clickDot = (dot) => {
+  if (
+    !display.textContent.includes(".") &&
+    firstOperand != "" &&
+    operator === ""
+  ) {
+    firstOperand += dot;
+  }
+  if (!display.textContent.includes(".") && secondOperand != "") {
+    secondOperand += dot;
+  }
+};
+
+const updateSecondDisplay = () => {
+  if (firstOperand != "" && operator != "" && secondOperand === "") {
+    secondDisplay.textContent = firstOperand + operator;
+  } else if (firstOperand != "" && operator != "" && secondOperand != "") {
+    secondDisplay.textContent = firstOperand + operator + secondOperand;
+  }
+};
 
 const clearData = () => {
-  firstNum = "";
-  secondNum = "";
-  firstOperator = "";
-  secondOperator = "";
+  firstOperand = "";
+  secondOperand = "";
+  operator = "";
   result = "";
-  displayValue = "0";
-  display.textContent = displayValue;
+  displayValue = "";
+  display.textContent = "0";
+  secondDisplay.textContent = "";
 };
 
-const add = (a, b) => {
-  return a + b;
-};
+const add = (a, b) => a + b;
+const subtract = (a, b) => a - b;
+const multiply = (a, b) => a * b;
+const divide = (a, b) => a / b;
 
-const subtract = (a, b) => {
-  return a - b;
-};
-
-const multiply = (a, b) => {
-  return a * b;
-};
-
-const divide = (a, b) => {
-  return a / b;
-};
-
-const operate = (firstNum, secondNum, operator) => {
-  firstNum = Number(firstNum);
-  secondNum = Number(secondNum);
+const operate = (firstOperand, secondOperand, operator) => {
+  firstOperand = Number(firstOperand);
+  secondOperand = Number(secondOperand);
 
   switch (operator) {
     case "+":
-      return add(firstNum, secondNum);
+      return add(firstOperand, secondOperand);
     case "-":
-      return subtract(firstNum, secondNum);
+      return subtract(firstOperand, secondOperand);
     case "x":
-      return multiply(firstNum, secondNum);
+      return multiply(firstOperand, secondOperand);
     case "÷":
-      return divide(firstNum, secondNum);
+      if (secondOperand === 0) {
+        return "ERROR";
+      } else return divide(firstOperand, secondOperand);
   }
 };
