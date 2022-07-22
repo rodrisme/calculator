@@ -7,27 +7,33 @@ const buttons = document.querySelectorAll("button");
 const display = document.querySelector(".display");
 const secondDisplay = document.querySelector(".second-display");
 
+window.addEventListener("keydown", (e) => {
+  if (e.key >= 0 && e.key <= 9) clickNumbers(e.key);
+  if (e.key == "+" || e.key == "-" || e.key == "*" || e.key == "/")
+    clickOperators(e.key);
+  if (e.key == ".") clickDot(e.key);
+  if (e.key == "Enter") clickEqual(e.key);
+  if (e.key == "Backspace") deleteLast();
+  if (e.key == "c") clearData();
+});
+
 const clickButtons = () => {
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
       if (button.classList.contains("number")) {
         clickNumbers(button.innerText);
-        updateDisplay();
-        updateSecondDisplay();
       } else if (button.classList.contains("operator")) {
-        clickOperator(button.innerText);
-        updateDisplay();
-        updateSecondDisplay();
+        clickOperators(button.innerText);
       } else if (button.classList.contains("equal")) {
         clickEqual();
         updateDisplay();
         updateSecondDisplay();
       } else if (button.classList.contains("dot")) {
         clickDot(button.innerText);
-        updateDisplay();
-        updateSecondDisplay();
       } else if (button.classList.contains("clear")) {
         clearData();
+      } else if (button.classList.contains("delete")) {
+        deleteLast();
       }
     });
   });
@@ -35,24 +41,40 @@ const clickButtons = () => {
 
 clickButtons();
 
+const deleteLast = () => {
+  if (firstOperand != "" && secondOperand === "" && operator === "") {
+    firstOperand = firstOperand.slice(0, -1);
+  } else if (firstOperand != "" && operator != "" && secondOperand === "") {
+    clearData();
+  } else if (secondOperand != "" && operator != "") {
+    secondOperand = secondOperand.slice(0, -1);
+  }
+  updateDisplay();
+  updateSecondDisplay();
+};
+
 const clickNumbers = (number) => {
   if (firstOperand === "" || operator === "") {
     firstOperand += number;
   } else if (firstOperand != "" && operator != "") {
     secondOperand += number;
   }
+  updateDisplay();
+  updateSecondDisplay();
 };
 
-const clickOperator = (operators) => {
+const clickOperators = (operators) => {
   if (firstOperand != "" && operator != "" && secondOperand != "") {
     result = operate(firstOperand, secondOperand, operator);
     firstOperand = roundNumber(result);
     operator = operators;
     secondOperand = "";
   }
-  if (firstOperand != "" && operator === "") {
-    operator = operators;
-  }
+  if (firstOperand != "" && operator === "") operator = operators;
+  if (operator === "/") operator = operator.replace("/", "÷");
+  if (operator === "*") operator = operator.replace("*", "x");
+  updateDisplay();
+  updateSecondDisplay();
 };
 
 const clickEqual = () => {
@@ -62,18 +84,20 @@ const clickEqual = () => {
     operator = "";
     secondOperand = "";
   }
+  updateDisplay();
+  updateSecondDisplay();
 };
 
 const updateDisplay = () => {
   if (firstOperand != "") {
     display.textContent = firstOperand;
+  } else if (firstOperand === "") {
+    display.textContent = "0";
   }
-  if (secondOperand != "") {
-    display.textContent = secondOperand;
-  }
-  if ((result != "" || result === 0) && secondOperand === "") {
+  if (secondOperand != "") display.textContent = secondOperand;
+  if ((result != "" || result === 0) && secondOperand === "")
     display.textContent = roundNumber(result);
-  }
+  if (result === Infinity) display.textContent = "lmao clear";
 };
 
 const clickDot = (dot) => {
@@ -87,6 +111,8 @@ const clickDot = (dot) => {
   if (!display.textContent.includes(".") && secondOperand != "") {
     secondOperand += dot;
   }
+  updateDisplay();
+  updateSecondDisplay();
 };
 
 const updateSecondDisplay = () => {
@@ -115,7 +141,6 @@ const divide = (a, b) => a / b;
 const operate = (firstOperand, secondOperand, operator) => {
   firstOperand = Number(firstOperand);
   secondOperand = Number(secondOperand);
-
   switch (operator) {
     case "+":
       return add(firstOperand, secondOperand);
@@ -124,9 +149,7 @@ const operate = (firstOperand, secondOperand, operator) => {
     case "x":
       return multiply(firstOperand, secondOperand);
     case "÷":
-      if (secondOperand === 0) {
-        return "ERROR";
-      } else return divide(firstOperand, secondOperand);
+      return divide(firstOperand, secondOperand);
   }
 };
 
