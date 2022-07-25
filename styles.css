@@ -1,17 +1,37 @@
 body {
   display: flex;
   flex-direction: column;
-  min-height: 95vh;
   justify-content: center;
   align-content: center;
   align-items: center;
-  height: 100vh;
   overflow: hidden;
-  background-color: azure;
+  background-color: #0e000a;
+  font-family: "Ubuntu", sans-serif;
+  color: #fbd8b7;
 }
 
-.display {
-  font-size: 50px;
+button {
+  font-size: larger;
+  background-color: #ed0d92;
+  border-style: none;
+  border-top: 1px solid #fbd8b7;
+  border-right: 1px solid #fbd8b7;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  font-size: 25px;
+}
+
+button.clear:hover {
+  background-color: #00a500;
+}
+
+button.delete:hover {
+  background-color: #c70000;
+}
+
+button:hover {
+  background-color: #ff51b9;
 }
 
 .container {
@@ -20,20 +40,39 @@ body {
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
   gap: 0px 0px;
   grid-auto-flow: row;
-  width: 310px;
-  height: 410px;
+  width: 320px;
+  height: 420px;
+  box-sizing: border-box;
+  border-left: 1px solid #fbd8b7;
+  border-bottom: 1px solid #fbd8b7;
 }
 
 .display {
   justify-self: end;
   align-self: end;
   grid-area: 1 / 1 / 2 / 5;
+  font-size: 35px;
+  background-color: #095d9a;
+  width: 320px;
+  height: auto;
+  text-align: right;
+  box-sizing: border-box;
+  border-right: 1px solid #fbd8b7;
+  padding: 0 5px 0 0;
 }
 
 .second-display {
   justify-self: end;
   align-self: start;
   grid-area: 1 / 1 / 2 / 5;
+  background-color: #095d9a;
+  text-align: right;
+  width: 320px;
+  height: 30px;
+  box-sizing: border-box;
+  border-top: 1px solid #fbd8b7;
+  border-right: 1px solid #fbd8b7;
+  padding: 5px 5px 0 0;
 }
 
 .zero {
@@ -42,4 +81,11 @@ body {
 
 .equal {
   grid-area: 5 / 4 / 7 / 5;
+}
+.delete {
+  background-color: #9c0000;
+}
+
+.clear {
+  background-color: #007200;
 }
